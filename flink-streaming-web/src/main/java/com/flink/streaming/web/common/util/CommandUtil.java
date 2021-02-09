@@ -58,6 +58,7 @@ public class CommandUtil {
      * @date 2020-09-18
      * @time 00:57
      */
+    //拼接执行的语句
     public static String buildRunCommandForYarnCluster(JobRunParamDTO jobRunParamDTO, JobConfigDTO jobConfig, String savepointPath) throws ParseException {
         StringBuilder command = new StringBuilder();
         command.append(jobRunParamDTO.getFlinkBinPath()).append(" run ");
@@ -68,6 +69,7 @@ public class CommandUtil {
         command.append(" -ynm ").append(JobConfigDTO.buildRunName(jobConfig.getJobName())).append(" ");
         command.append(" -yd -m yarn-cluster ").append(" ");
 
+        //外部依赖Jar包
         if (StringUtils.isNotEmpty(jobConfig.getExtJarPath())) {
             String[] urls = jobConfig.getExtJarPath().split("\n");
             for (String url : urls) {
@@ -75,9 +77,10 @@ public class CommandUtil {
             }
         }
 
-
+        //执行sql的Jar包
         command.append("-c  com.flink.streaming.core.JobApplication").append(" ");
         command.append(jobRunParamDTO.getSysHome()).append(JARVERSION);
+        //页面上写的sql语句
         command.append(" -sql ").append(jobRunParamDTO.getSqlPath()).append(" ");
         if (StringUtils.isNotEmpty(jobRunParamDTO.getFlinkCheckpointConfig())) {
             command.append(" ").append(jobRunParamDTO.getFlinkCheckpointConfig());
